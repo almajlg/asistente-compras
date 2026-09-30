@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+      <h1 class="title">Hello World!</h1>
+      <p id="currentTime"></p>
+      <script src="script.js"></script>
+  </body>
+</html><!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -78,7 +89,7 @@
             
             <!-- Líderes de área -->
             <div>
-              <p class="font-bold text-slate-900 text-[11px] uppercase tracking-wider text-indigo-950 mb-1">Líderes de Área</p>
+              <p class="font-bold text-indigo-950 text-[11px] uppercase tracking-wider mb-1">Líderes de Área</p>
               
               <div class="space-y-2 border-l-2 border-indigo-200 pl-2">
                 <div>
@@ -109,7 +120,7 @@
 
             <!-- Equipo de Compras -->
             <div class="border-t border-slate-100 pt-2">
-              <p class="font-bold text-slate-900 text-[11px] uppercase tracking-wider text-indigo-950 mb-1">Proceso de Compras</p>
+              <p class="font-bold text-indigo-950 text-[11px] uppercase tracking-wider mb-1">Proceso de Compras</p>
               
               <div class="space-y-2 border-l-2 border-indigo-200 pl-2">
                 <div>
@@ -162,6 +173,20 @@
 
     function reiniciarFlujo() {
       state = { voboConfirmado: false, monto: null, tipoCompra: null, servicioRecibido: false, cotizacionesReq: 0, necesitaOC: false, pasoActual: 0 };
+      renderStep();
+    }
+
+    function selectMonto(monto, cotizaciones, necesitaOC) {
+      state.monto = monto;
+      state.cotizacionesReq = cotizaciones;
+      state.necesitaOC = necesitaOC;
+      state.pasoActual = 2;
+      renderStep();
+    }
+
+    function selectTipo(tipo) {
+      state.tipoCompra = tipo;
+      state.pasoActual = 3;
       renderStep();
     }
 
@@ -229,7 +254,7 @@
               <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
                 <div class="flex items-start gap-2">
                   <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5"></i>
-                  <div><strong>Obtener Cotizaciones:</strong> Recopila las opciones necesarias (normalmente 2 proveedores si supera $10,000 MXN).</div>
+                  <div><strong>Obtener Cotizaciones:</strong> Recopila las opciones necesarias (mínimo 2 proveedores si supera $10,000 MXN).</div>
                 </div>
                 <div class="flex items-start gap-2">
                   <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5"></i>
@@ -270,7 +295,7 @@
         `;
       }
 
-      // PASO 1: MONTO DE LA COMPRA
+      // PASO 1: MONTO DE LA COMPRA (COTIZACIONES +1 MODIFICADO)
       else if (state.pasoActual === 1) {
         updateProgress(1, "Paso 1: Definición del Monto", 30);
         card.innerHTML = `
@@ -286,34 +311,34 @@
             </div>
 
             <div class="grid gap-3 mt-6">
-              <button onclick="selectMonto(5000, 1, false)" class="p-4 border border-slate-200 rounded-xl hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition flex items-center justify-between group">
+              <button onclick="selectMonto(5000, 2, false)" class="p-4 border border-slate-200 rounded-xl hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition flex items-center justify-between group">
                 <div>
                   <div class="font-bold text-slate-800 group-hover:text-indigo-600">Menor o igual a $10,000 MXN</div>
-                  <div class="text-xs text-slate-500">Compras menores, suministros rápidos o uso potencial de Green Card.</div>
+                  <div class="text-xs text-slate-500">Compras menores o uso de Green Card. Requiere al menos 2 cotizaciones.</div>
                 </div>
                 <i data-lucide="chevron-right" class="w-5 h-5 text-slate-400 group-hover:text-indigo-600"></i>
               </button>
 
-              <button onclick="selectMonto(25000, 2, false)" class="p-4 border border-slate-200 rounded-xl hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition flex items-center justify-between group">
+              <button onclick="selectMonto(25000, 3, false)" class="p-4 border border-slate-200 rounded-xl hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition flex items-center justify-between group">
                 <div>
                   <div class="font-bold text-slate-800 group-hover:text-indigo-600">De $10,001 a $50,000 MXN</div>
-                  <div class="text-xs text-slate-500">Requiere un proceso de cotización competitivo estándar.</div>
+                  <div class="text-xs text-slate-500">Requiere un proceso de cotización competitivo (mínimo 3 cotizaciones).</div>
                 </div>
                 <i data-lucide="chevron-right" class="w-5 h-5 text-slate-400 group-hover:text-indigo-600"></i>
               </button>
 
-              <button onclick="selectMonto(75000, 3, true)" class="p-4 border border-slate-200 rounded-xl hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition flex items-center justify-between group">
+              <button onclick="selectMonto(75000, 4, true)" class="p-4 border border-slate-200 rounded-xl hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition flex items-center justify-between group">
                 <div>
                   <div class="font-bold text-slate-800 group-hover:text-indigo-600">De $50,001 a $100,000 MXN</div>
-                  <div class="text-xs text-slate-500">Proceso competitivo obligatorio con al menos 3 cotizaciones.</div>
+                  <div class="text-xs text-slate-500">Proceso competitivo obligatorio con al menos 4 cotizaciones.</div>
                 </div>
                 <i data-lucide="chevron-right" class="w-5 h-5 text-slate-400 group-hover:text-indigo-600"></i>
               </button>
 
-              <button onclick="selectMonto(150000, 3, true)" class="p-4 border border-slate-200 rounded-xl hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition flex items-center justify-between group">
+              <button onclick="selectMonto(150000, 4, true)" class="p-4 border border-slate-200 rounded-xl hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition flex items-center justify-between group">
                 <div>
                   <div class="font-bold text-slate-800 group-hover:text-indigo-600">Mayor a $100,000 MXN</div>
-                  <div class="text-xs text-slate-500">Requiere Orden de Compra (OC) formal obligatoria para Gastos Operativos.</div>
+                  <div class="text-xs text-slate-500">Mínimo 4 cotizaciones + Orden de Compra (OC) formal para Gastos Operativos.</div>
                 </div>
                 <i data-lucide="chevron-right" class="w-5 h-5 text-slate-400 group-hover:text-indigo-600"></i>
               </button>
@@ -532,7 +557,8 @@
         `;
       }
 
-      // PASO 5: ENTRADA DE MERCANCÍA Y PAGO
+      // PASO 5: ENTRADA DE MERCANCÍA Y PAGO (COMPLETADO Y EXPANDIDO)
+    // PASO 5: ENTRADA DE MERCANCÍA Y PAGO
       else if (state.pasoActual === 5) {
         updateProgress(5, "Paso 5: Recepción, Entrada y Pago", 100);
         card.innerHTML = `
@@ -547,57 +573,88 @@
               </div>
             </div>
 
+            <!-- Caja introductoria del diseño original -->
             <div class="bg-emerald-50/60 border border-emerald-200 rounded-lg p-4 mb-4 text-xs text-slate-700 space-y-2">
               <p class="font-bold text-emerald-950">¿Qué es la Entrada de Mercancía?</p>
               <p>Es el documento contable que registra la llegada de productos o el cumplimiento del servicio entregado por el proveedor.</p>
             </div>
 
-            <div class="space-y-3 text-xs text-slate-700">
-              <p class="font-semibold text-slate-800">Pasos finales tras recibir el bien o servicio:</p>
-              <ol class="list-decimal pl-4 space-y-1.5">
-                <li><strong>Solicitar Entrada por Correo:</strong> Solicita por correo la entrada con el VoBo del usuario solicitante una vez recibido/realizado el producto o servicio.</li>
-                <li><strong>Trámite de Activos Fijos:</strong> Si la compra fue un activo fijo, este se tramita <strong>únicamente con factura</strong>.</li>
-                <li><strong>Portal de Proveedores:</strong> El proveedor subirá su factura en el portal para que coincida exactamente con la Orden de Compra y se programe su pago.</li>
-              </ol>
+            <div class="space-y-4 text-xs text-slate-700">
+              <h3 class="font-bold text-slate-800 text-sm">Pasos finales tras recibir el bien o servicio:</h3>
+              
+              <!-- Contenedor gris del diseño original aplicado a los nuevos pasos -->
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-4">
+                <div class="flex items-start gap-2.5">
+                  <span class="w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                  <div><strong>Recepción del Producto o Cumplimiento del Servicio</strong><br>El proveedor entrega físicamente los bienes en el campus/almacén o culmina a satisfacción la prestación del servicio acordado en la Orden de Compra.</div>
+                </div>
+                
+                <div class="flex items-start gap-2.5">
+                  <span class="w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                  <div>
+                    <strong>En el Portal Mis Compras: Agregar Comentarios y Adjuntar Evidencia</strong><br>
+                    En la sección "Agregar comentarios":
+                    <ul class="list-disc pl-4 mt-1 space-y-1">
+                      <li><strong>Coloca el comentario:</strong> Registra la nota formal de que el producto fue recibido a entera conformidad o el servicio fue cumplido (puedes mencionar con @nombre a los involucrados).</li>
+                      <li><strong>Adjunta la evidencia en comentarios:</strong> Sube fotos de la mercancía recibida, remisión o guía firmada por almacén/usuario, actas de entrega o entregables del servicio.</li>
+                    </ul>
+                  </div>
+                </div>
+                
+                <div class="flex items-start gap-2.5">
+                  <span class="w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                  <div>
+                    <strong>Solicitar la Entrada de Mercancía por Correo</strong><br>
+                    Una vez subida la evidencia en los comentarios del sistema, se puede mandar el correo formal solicitando la entrada de mercancía adjuntando el VoBo del usuario solicitante.
+                    <p class="text-amber-700 font-semibold mt-1 flex items-center gap-1"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Nota: Si la compra fue un activo fijo, este se tramita únicamente con factura.</p>
+                  </div>
+                </div>
+                
+                <div class="flex items-start gap-2.5">
+                  <span class="w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
+                  <div><strong>Portal de Proveedores y Liberación de Pago</strong><br>
+                  Generada la entrada contable, el proveedor sube su factura en el portal de proveedores. El sistema valida que concuerde con la Orden de Compra y se programa su pago.</div>
+                </div>
+              </div>
+
+              <!-- Regla de oro -->
+              <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-amber-900 mt-4">
+                 <p class="font-bold flex items-center gap-1">
+                    <i data-lucide="star" class="w-4 h-4 text-amber-600"></i> Regla de Oro:
+                 </p>
+                 <p class="mt-1 font-medium">No envíes el correo de solicitud de entrada sin haber registrado el comentario y adjuntado la evidencia en el portal Mis Compras previamente.</p>
+              </div>
             </div>
+          </div>
 
             <div class="mt-4 p-3 bg-indigo-50 rounded-lg text-xs text-indigo-900 border border-indigo-100">
               🎉 <strong>¡Proceso completado!</strong> Siguiendo estos lineamientos garantizas una compra transparente, rápida y en norma institucional.
             </div>
           </div>
 
+
+
           <div class="mt-6 flex justify-between items-center border-t pt-3">
             <button onclick="state.pasoActual=4; renderStep();" class="text-xs font-semibold text-slate-500 flex items-center gap-1 hover:text-slate-800">
               <i data-lucide="arrow-left" class="w-4 h-4"></i> Regresar
             </button>
-            <button onclick="reiniciarFlujo()" class="px-5 py-2 rounded-lg bg-slate-800 text-white font-semibold text-xs hover:bg-slate-900 flex items-center gap-1 transition">
-              Iniciar Nueva Consulta <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+            <button onclick="reiniciarFlujo()" class="px-5 py-2 rounded-lg bg-emerald-600 text-white font-semibold text-xs hover:bg-emerald-700 flex items-center gap-1 transition">
+              <i data-lucide="check" class="w-4 h-4"></i> Concluir y Reiniciar
             </button>
           </div>
+
+  
         `;
       }
 
-      // Re-inicializar íconos de Lucide
-      lucide.createIcons();
+      // Reiniciar iconos de Lucide
+      if (window.lucide) {
+        lucide.createIcons();
+      }
     }
 
-    // Funciones de decisión
-    function selectMonto(monto, cotizaciones, oc) {
-      state.monto = monto;
-      state.cotizacionesReq = cotizaciones;
-      state.necesitaOC = oc;
-      state.pasoActual = 2;
-      renderStep();
-    }
-
-    function selectTipo(tipo) {
-      state.tipoCompra = tipo;
-      state.pasoActual = 3;
-      renderStep();
-    }
-
-    // Inicializar la aplicación
-    document.addEventListener('DOMContentLoaded', () => {
+    // Inicialización al cargar
+    document.addEventListener("DOMContentLoaded", () => {
       renderStep();
     });
   </script>
